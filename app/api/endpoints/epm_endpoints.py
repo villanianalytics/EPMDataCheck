@@ -20,7 +20,7 @@ async def epm_export_data_slice_json(
 ):
     try:
         logging.info("Received request to export data from epm")
-        export_data_slice_json(base_url,username,password,app_name,api_version,plan_type_name,payload)
+        export_data_slice_json(base_url, username, password, app_name, api_version, plan_type_name, payload)
     except Exception as e:
         logging.error(f"Error in export data: {e}")
 
@@ -42,7 +42,7 @@ async def epm_import_data_slice_json(
         logging.error(f"Error in import data: {e}")
 
 
-@app.post("/run_job/")
+@router.post("/run_job/")
 async def run_job(
         background_tasks: BackgroundTasks,
         base_url: str = Form(...),

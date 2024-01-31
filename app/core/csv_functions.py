@@ -1,6 +1,8 @@
 import csv
 import io
 
+import numpy as np
+import pandas as pd
 from starlette.responses import JSONResponse
 
 from app.core.logging_engine import *
@@ -14,7 +16,7 @@ def csv_to_json(
         row_dimensions: str ):
 
     # Read the uploaded CSV file into a DataFrame
-    content = await file.read()
+    content = file.read()
     csv_content = io.StringIO(content.decode())
     df = pd.read_csv(csv_content, header=None)
 
