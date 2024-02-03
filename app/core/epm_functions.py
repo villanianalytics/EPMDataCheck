@@ -69,7 +69,7 @@ def import_data_slice_json(
         raise HTTPException(status_code=response.status_code, detail=response.text)
 
 
-def run_job(
+async def run_job(
         background_tasks: BackgroundTasks,
         base_url: str,
         api_version: str,

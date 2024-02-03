@@ -30,6 +30,36 @@ def run_cli():
     parser_save_to_excel.add_argument('--target', help='Path to target file with csv data in it', type=str)
     parser_save_to_excel.add_argument('--excel-destination', help='Path to save Excel file', type=str)
 
+    parser_export_slice = subparsers.add_parser('export-data-slice', help='Exports data from an Oracle EPM application')
+    parser_export_slice.add_argument('--base_url', help='base application URL', type=str)
+    parser_export_slice.add_argument('--username', help='username to log into application', type=str)
+    parser_export_slice.add_argument('--password', help='password for application', type=str)
+    parser_export_slice.add_argument('--app_name', help='application to export from', type=str)
+    parser_export_slice.add_argument('--api_version', help='API version', type=str)
+    parser_export_slice.add_argument('--plan_type_name', help='name of plan type to pull from', type=str)
+    parser_export_slice.add_argument('--payload', help='Path to json export payload or json', type=str)
+
+    parser_import_slice = subparsers.add_parser('import-data-slice', help='Imports data to an Oracle EPM application')
+    parser_import_slice.add_argument('--base_url', help='base application URL', type=str)
+    parser_import_slice.add_argument('--username', help='username to log into application', type=str)
+    parser_import_slice.add_argument('--password', help='password for application', type=str)
+    parser_import_slice.add_argument('--app_name', help='application to import to', type=str)
+    parser_import_slice.add_argument('--api_version', help='API version', type=str)
+    parser_import_slice.add_argument('--plan_type_name', help='name of plan type to import to', type=str)
+    parser_import_slice.add_argument('--payload', help='Path to json import payload or json', type=str)
+
+    parser_run_epm_job = subparsers.add_parser('run-epm-job', help='Runs an EPM Job')
+    parser_run_epm_job.add_argument('--base_url', help='base application URL', type=str)
+    parser_run_epm_job.add_argument('--username', help='username to log into application', type=str)
+    parser_run_epm_job.add_argument('--password', help='password for application', type=str)
+    parser_run_epm_job.add_argument('--app_name', help='application to import to', type=str)
+    parser_run_epm_job.add_argument('--api_version', help='API version', type=str)
+    parser_run_epm_job.add_argument('--job_type', help='name of plan type to import to', type=str)
+    parser_run_epm_job.add_argument('--job_name', help='name of plan type to import to', type=str)
+    parser_run_epm_job.add_argument('--parameters', help='Path to json import payload or json', type=str)
+    parser_run_epm_job.add_argument('--poll_interval', help='Path to json import payload or json', type=str)
+    parser_run_epm_job.add_argument('--max_retries', help='Path to json import payload or json', type=str)
+
     # Parse the arguments
     args = parser.parse_args()
 
@@ -75,6 +105,39 @@ def run_cli():
         save_to_excel(args.source,
                       args.target,
                       args.excel_destination)
+
+    elif args.command == 'export-data-slice':
+        export_data_slice_json(
+            args.base_url,
+            args.username,
+            args.password,
+            args.app_name,
+            args.api_version,
+            args.plan_type_name,
+            args.payload)
+
+    elif args.command == 'import-data-slice':
+        import_data_slice_json(
+            args.base_url,
+            args.username,
+            args.password,
+            args.app_name,
+            args.api_version,
+            args.plan_type_name,
+            args.payload)
+
+    elif args.command == 'run-epm-job':
+        run_job(
+            base_url=args.base_url,
+            api_version=args.api_version,
+            application=args.app_name,
+            job_type=args.job_type,
+            job_name=args.job_name,
+            username=args.username,
+            password=args.password,
+            parameters=args.parameters,
+            poll_interval=args.poll_interval,
+            max_retries=args.max_retries)
 
     else:
         parser.print_help()
