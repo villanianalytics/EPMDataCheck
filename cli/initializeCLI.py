@@ -3,6 +3,8 @@ import json
 from app.core.logging_engine import *
 from app.core.json_functions import *
 from app.core.csv_functions import *
+from app.core.xlsx_functions import *
+from app.core.epm_functions import *
 import argparse
 
 
@@ -22,6 +24,11 @@ def run_cli():
     parser_csv_to_json.add_argument('--pov_dimension_members', help='Path to a file with csv data in it', type=str)
     parser_csv_to_json.add_argument('--col_dimensions', help='Path to a file with csv data in it', type=str)
     parser_csv_to_json.add_argument('--row_dimensions', help='Path to a file with csv data in it', type=str)
+
+    parser_save_to_excel = subparsers.add_parser('save-to-excel', help='Create Excel comparison file')
+    parser_save_to_excel.add_argument('--source', help='Path to source file with csv data in it', type=str)
+    parser_save_to_excel.add_argument('--target', help='Path to target file with csv data in it', type=str)
+    parser_save_to_excel.add_argument('--excel-destination', help='Path to save Excel file', type=str)
 
     # Parse the arguments
     args = parser.parse_args()
@@ -62,6 +69,12 @@ def run_cli():
                     args.pov_dimension_members,
                     args.col_dimensions,
                     args.row_dimensions)
+
+    elif args.command == 'save-to-excel':
+
+        save_to_excel(args.source,
+                      args.target,
+                      args.excel_destination)
 
     else:
         parser.print_help()
