@@ -1,32 +1,45 @@
-from starlette.responses import FileResponse
+from typing import List
+from urllib import request
+
+from starlette.responses import FileResponse, JSONResponse
 
 from app.core.xlsx_functions import *
-from fastapi import APIRouter, HTTPException, Body, UploadFile, File
+from fastapi import APIRouter, HTTPException, Body, UploadFile, File, Form
 
 router = APIRouter()
 
 
-@router.post("/compare_csvs/")
-async def compare_csvs(data_pull_file: UploadFile = File(...), comparison_file: UploadFile = File(...)):
-    # Validate the uploaded files' type
-    if data_pull_file.content_type not in ["application/vnd.ms-excel", "text/csv"]:
-        return {"detail": "Invalid file type for data_pull_file"}, 400
-    if comparison_file.content_type not in ["application/vnd.ms-excel", "text/csv"]:
-        return {"detail": "Invalid file type for comparison_file"}, 400
+@router.post("/variance_csvs/")
+async def create_variance_csvs(
+    data_pull_csv: UploadFile = File(...),
+    comparison_csv: UploadFile = File(...),
+    excel_path: str = Form(...),
+    src_num_headers: int = Form(...),
+    tgt_num_headers: int = Form(...),
+    row_dimensions: List[str] = Form(...)  # This captures multiple row_dimensions form fields as a list
+    ):
     # Read the content of the uploaded files
-    data_pull_csv = await data_pull_file.read()
-    comparison_csv = await comparison_file.read()
+    try:
+        data_pull_content = await data_pull_csv.read()
+        comparison_content = await comparison_csv.read()
 
-    # Specify where to save the Excel output
-    excel_path = "comparison.xlsx"
+        # You would typically save these files to disk or process them directly from memory
+        # For this example, we assume processing directly from memory, hence converting content to string
+        # Be sure to adjust your save_to_excel_with_hash_check function to work with file content or paths as necessary
 
-    # Call your save_to_excel function here
-    status_code = save_to_excel(data_pull_csv.decode(), comparison_csv.decode(), excel_path)
-
-    # Based on the returned status_code, send the appropriate response
-    if status_code == 200:
-        return FileResponse(excel_path, status_code=200)
-    elif status_code == 412:
-        return FileResponse(excel_path, status_code=412)
-    else:
-        return {"detail": "Internal Server Error"}, 500
+        # Assuming save_to_excel_with_hash_check is adjusted to work with the file content
+        status_code = save_to_excel_with_hash_check(
+            data_pull_content.decode('utf-8'),  # Decoding bytes to string
+            comparison_content.decode('utf-8'),  # Decoding bytes to string
+            excel_path,
+            src_num_headers,
+            tgt_num_headers,
+            row_dimensions
+        )
+        return JSONResponse(status_code=200, content={"message": "Success", "status_code": status_code})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        # It's important to close the files to free up resources
+        await data_pull_csv.close()
+        await comparison_csv.close()

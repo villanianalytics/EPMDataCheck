@@ -29,6 +29,9 @@ def run_cli():
     parser_save_to_excel.add_argument('--source', help='Path to source file with csv data in it', type=str)
     parser_save_to_excel.add_argument('--target', help='Path to target file with csv data in it', type=str)
     parser_save_to_excel.add_argument('--excel-destination', help='Path to save Excel file', type=str)
+    parser_save_to_excel.add_argument('--srcHeaders', help='Number of Source Header Rows', type=str)
+    parser_save_to_excel.add_argument('--tgtHeaders', help='Number of Target Header Rows', type=str)
+    parser_save_to_excel.add_argument('--rowDims', help='Row Dimension members', type=str)
 
     parser_export_slice = subparsers.add_parser('export-data-slice', help='Exports data from an Oracle EPM application')
     parser_export_slice.add_argument('--base_url', help='base application URL', type=str)
@@ -102,9 +105,12 @@ def run_cli():
 
     elif args.command == 'save-to-excel':
 
-        save_to_excel(args.source,
-                      args.target,
-                      args.excel_destination)
+        save_to_excel_with_hash_check(args.source,
+                                      args.target,
+                                      args.excel_destination,
+                                      args.srcHeaders,
+                                      args.tgtHeaders,
+                                      args.rowDims)
 
     elif args.command == 'export-data-slice':
         export_data_slice_json(
