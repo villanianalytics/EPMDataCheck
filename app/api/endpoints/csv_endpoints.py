@@ -14,7 +14,7 @@ async def convert_csv_to_json(file: UploadFile = File(...),
                               row_dimensions: str = Form(...)):
     try:
         logging.info("Received request to /convert_csv_to_json/")
-        csv_data = csv_to_json(
+        csv_data = csv_to_export_json(
             file,
             pov_dimensions,
             pov_dimension_members,

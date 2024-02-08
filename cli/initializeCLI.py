@@ -97,7 +97,7 @@ def run_cli():
 
     elif args.command == 'csv-to-json':
         csv_data = None
-        csv_to_json(args.file,
+        csv_to_export_json(args.file,
                     args.pov_dimensions,
                     args.pov_dimension_members,
                     args.col_dimensions,

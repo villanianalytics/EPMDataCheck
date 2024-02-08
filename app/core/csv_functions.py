@@ -8,12 +8,12 @@ from starlette.responses import JSONResponse
 from app.core.logging_engine import *
 
 
-def csv_to_json(
+def csv_to_export_json(
         file: str,
-        pov_dimensions: str ,
-        pov_dimension_members: str ,
-        col_dimensions: str ,
-        row_dimensions: str ):
+        pov_dimensions: str,
+        pov_dimension_members: str,
+        col_dimensions: str,
+        row_dimensions: str):
 
     # Read the uploaded CSV file into a DataFrame
     content = file.read()
